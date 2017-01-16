@@ -1,0 +1,99 @@
+package main;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.List;
+
+public class GooglePlaces {
+
+	// Google API Key
+	//private static final String API_KEY = "MY GOOGLE KEY GOES HERE";  // Android
+	private static final String API_KEY = "MY GOOGLE KEY GOES HERE";    // Browser
+	private static final String TAG = GooglePlaces.class.getSimpleName();
+
+	// Google Places serach url's
+	private static final String PLACES_SEARCH_URL = "https://maps.googleapis.com/maps/api/place/search/json?";
+	private static final String PLACES_DETAILS_URL = "https://maps.googleapis.com/maps/api/place/details/json?";
+
+	@SuppressWarnings("unused")
+	private double _latitude;
+	@SuppressWarnings("unused")
+	private double _longitude;
+	private double _radius;
+
+	/**
+	 * Searching places
+	 * @param latitude - latitude of place
+	 * @params longitude - longitude of place
+	 * @param radius - radius of searchable area
+	 * @param types - type of place to search
+	 * @return list of places
+	 * */
+	public static void main(String agr[]){
+		GooglePlaces goole=new GooglePlaces();
+		//18.4854363 and Longitude: 73.9584248
+		try {
+			goole.search(18.4854363f,73.9584248F,5.0F,"");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	public List search(double latitude, double longitude, double radius, String types)
+			throws Exception {
+
+			    this._latitude = latitude;
+			    this._longitude = longitude;
+			    this._radius = radius;
+
+			    StringBuilder urlString = new StringBuilder(
+			            PLACES_SEARCH_URL);
+
+			    urlString.append("&location=");
+			    urlString.append(Double.toString(latitude));
+			    urlString.append(",");
+			    urlString.append(Double.toString(longitude));
+			    urlString.append("&radius=" + _radius);
+			    urlString.append("&types=" + types);
+			    urlString.append("&sensor=false&key=" + API_KEY);
+
+			    
+
+			    try {
+			        String json = getJSON(urlString.toString());
+			        System.out.println(json);
+
+			    } catch (Exception ex) {
+			        
+			    }
+			    return null;
+			}
+
+			
+
+
+			protected String getJSON(String url) {
+			    return getUrlContents(url);
+			}
+
+			private String getUrlContents(String theUrl) {
+			    StringBuilder content = new StringBuilder();
+
+			    try {
+			        URL url = new URL(theUrl);
+			        URLConnection urlConnection = url.openConnection();
+			        BufferedReader bufferedReader = new BufferedReader(
+			                new InputStreamReader(urlConnection.getInputStream()), 8);
+			        String line;
+			        while ((line = bufferedReader.readLine()) != null) {
+			            content.append(line + "\n");
+			        }
+			        bufferedReader.close();
+			    }catch (Exception e) {
+			        e.printStackTrace();
+			    }
+			    return content.toString();
+			}
+			}

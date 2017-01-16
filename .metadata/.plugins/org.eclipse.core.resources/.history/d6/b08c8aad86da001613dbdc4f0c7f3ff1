@@ -1,0 +1,22 @@
+package main.java;
+
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.context.annotation.Bean;
+
+@Configurable
+public class Appconfig {
+
+	@Bean
+	public UserRepository userRepository() {
+	    System.out.println("repo from bean");
+	    return new UserRepository();
+	}
+
+	@Bean
+	public UserService userService() {
+	    System.out.println("ser from bean");
+	    return new UserService();
+	}
+	
+	
+}

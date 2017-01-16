@@ -1,0 +1,5 @@
+package main.java;
+@Configuration
+public class AppConfig {
+
+}

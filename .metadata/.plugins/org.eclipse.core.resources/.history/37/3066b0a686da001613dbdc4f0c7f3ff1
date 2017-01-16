@@ -1,0 +1,8 @@
+package main.java;
+
+import org.springframework.beans.factory.annotation.Configurable;
+
+@Configurable
+public class Appconfig {
+
+}

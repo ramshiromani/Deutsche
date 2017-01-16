@@ -1,0 +1,19 @@
+package main.java;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class AppConfig {
+	@Bean
+	public LatLng userRepository() {
+	    System.out.println("repo from bean");
+	    return new LatLng();
+	}
+
+	@Bean
+	public PlacesService userService() {
+	    System.out.println("ser from bean");
+	    return new PlacesService();
+	}
+}

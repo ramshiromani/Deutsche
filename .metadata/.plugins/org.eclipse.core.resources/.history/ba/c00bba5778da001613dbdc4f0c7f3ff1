@@ -1,0 +1,39 @@
+package main.java;
+
+public class ShopVo {
+String pincode;
+String latitude;
+public String getLatitude() {
+	return latitude;
+}
+public void setLatitude(String latitude) {
+	this.latitude = latitude;
+}
+public String getLongitude() {
+	return longitude;
+}
+public void setLongitude(String longitude) {
+	this.longitude = longitude;
+}
+String longitude;
+public String getPincode() {
+	return pincode;
+}
+public void setPincode(String pincode) {
+	this.pincode = pincode;
+}
+public String getShopAddressNumber() {
+	return shopAddressNumber;
+}
+public void setShopAddressNumber(String shopAddressNumber) {
+	this.shopAddressNumber = shopAddressNumber;
+}
+public String getShopName() {
+	return shopName;
+}
+public void setShopName(String shopName) {
+	this.shopName = shopName;
+}
+String shopAddressNumber;
+String shopName;
+}

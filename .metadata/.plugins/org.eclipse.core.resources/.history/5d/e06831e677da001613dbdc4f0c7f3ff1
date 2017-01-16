@@ -1,0 +1,129 @@
+package main.java;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+public class PlacesService {
+
+	// Google API Key
+	// private static final String API_KEY = "MY GOOGLE KEY GOES HERE"; //
+	// Android
+	private static final String API_KEY = "AIzaSyAFAoAMnx7yQw_Cy8xQMRIFuWRhmFRe3M8"; // Browser
+	private static final String TAG = PlacesService.class.getSimpleName();
+
+	// Google Places serach url's
+	private static final String PLACES_SEARCH_URL = "https://maps.googleapis.com/maps/api/place/search/json?";
+	private static final String PLACES_DETAILS_URL = "https://maps.googleapis.com/maps/api/place/details/json?";
+
+	@SuppressWarnings("unused")
+	private double _latitude;
+	@SuppressWarnings("unused")
+	private double _longitude;
+	private double _radius;
+
+	/**
+	 * Searching places
+	 * 
+	 * @param latitude
+	 *            - latitude of place
+	 * @params longitude - longitude of place
+	 * @param radius
+	 *            - radius of searchable area
+	 * @param types
+	 *            - type of place to search
+	 * @return list of places
+	 * */
+	// public static void main(String agr[]){
+	// GooglePlaces goole=new GooglePlaces();
+	// 18.4854363 and Longitude: 73.9584248
+	// try {
+	// goole.search(18.4854363f,73.9584248F,5.0F,"establishment");
+	// } catch (Exception e) {
+	// TODO Auto-generated catch block
+	// e.printStackTrace();
+	// }
+	// }
+	public List<Place> findPlaces(String latitude, String longitude,String placeSpacification) {
+
+		String urlString = makeUrl(latitude, longitude, placeSpacification);
+		
+
+		try {
+			String json = getJSON(urlString);
+
+			//System.out.println(json);
+			JSONObject object = new JSONObject(json);
+			JSONArray array = object.getJSONArray("results");
+
+			ArrayList<Place> arrayList = new ArrayList<Place>();
+			for (int i = 0; i < array.length(); i++) {
+				try {
+					Place place =Place.jsonToPontoReferencia((JSONObject) array.get(i));
+
+					arrayList.add(place);
+				} catch (Exception e) {
+				}
+			}
+			return arrayList;
+		} catch (JSONException ex) {
+
+		}
+		return null;
+	}
+
+	private String makeUrl(String latitude, String longitude,String place) {
+        StringBuilder urlString = new StringBuilder("https://maps.googleapis.com/maps/api/place/search/json?");
+
+       if (place.equals("")) {
+               urlString.append("&location=");
+               urlString.append(latitude);
+               urlString.append(",");
+               System.out.println("longitude---"+longitude);
+               urlString.append(longitude);
+               urlString.append("&radius=1000");
+            //   urlString.append("&types="+place);
+               urlString.append("&sensor=false&key=" + API_KEY);
+               System.out.println(urlString);
+       } else {
+               urlString.append("&location=");
+               urlString.append(latitude);
+               urlString.append(",");
+               urlString.append(longitude);
+               urlString.append("&radius=1000");
+               urlString.append("&types="+place);
+               urlString.append("&sensor=false&key=" + API_KEY);
+       }
+       return urlString.toString();
+	}
+
+	protected String getJSON(String url) {
+		return getUrlContents(url);
+	}
+
+	private String getUrlContents(String theUrl) {
+		StringBuilder content = new StringBuilder();
+
+		try {
+			URL url = new URL(theUrl);
+			URLConnection urlConnection = url.openConnection();
+			BufferedReader bufferedReader = new BufferedReader(
+					new InputStreamReader(urlConnection.getInputStream()), 8);
+			String line;
+			while ((line = bufferedReader.readLine()) != null) {
+				content.append(line + "\n");
+			}
+			bufferedReader.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return content.toString();
+	}
+}

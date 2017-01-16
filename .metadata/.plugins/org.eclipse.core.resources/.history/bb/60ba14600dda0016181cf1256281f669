@@ -1,0 +1,69 @@
+package main.java;
+
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.springframework.boot.*;
+import org.springframework.boot.autoconfigure.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.*;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@EnableAutoConfiguration
+public class Example<Place> {
+	private Map<String, ShopVo> map = new ConcurrentHashMap<>();
+
+	@RequestMapping("/Hello")
+	String home() {
+
+		return "Hello World test!";
+	}
+
+	
+	@RequestMapping(value = "/createShop", method = RequestMethod.POST, consumes = "application/json")
+	public ResponseEntity<Void> createEmployee(@RequestBody ShopVo place)  {
+		System.out.println("Hi");
+		try{
+		LatLng latLng=new LatLng();
+		String s[]=latLng.getLatLongPositions(place.getPincode());
+		place.setLatitude(s[0]);
+		place.setLongitude(s[1]);
+		map.put(place.getPincode(), place);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return new ResponseEntity<Void>(HttpStatus.CONFLICT);
+	}
+
+	@RequestMapping(value = "/getShopDetails/{pincode}", method = RequestMethod.GET, headers = "Accept=application/json")
+	public ShopVo getCountries(@PathVariable(value = "pincode") String pincode) {
+
+		return map.get(pincode);
+	}
+
+	@RequestMapping(value = "/getShopDetails", method = RequestMethod.GET, headers = "Accept=application/json")
+	public ShopVo getCountries() {
+		ShopVo shop = new ShopVo();
+		shop.setPincode("488333");
+		shop.setShopAddressNumber("pune");
+		shop.setShopName("Test");
+		return shop;
+	}
+	
+	@RequestMapping(value = "/getPlaces/{latitude}/{longitude}", method = RequestMethod.GET, headers = "Accept=application/json")
+	public Place getCountries(@PathVariable(value = "latitude") String latitude,@PathVariable(value = "longitude") String longitude) {
+
+		List<main.java.Place> place=new PlacesService().findPlaces(Double.valueOf(latitude), Double.valueOf(longitude), "");
+		return place;
+	}
+
+	public static void main(String[] args) throws Exception {
+		// System.out.println("Paramenter===========>>");
+		// System.out.println("Paramenter===========>>"+args[0]);
+		SpringApplication.run(Example.class, args);
+	}
+
+}
